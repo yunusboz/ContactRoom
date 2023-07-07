@@ -3,6 +3,7 @@ package com.yunus.contactroom.model;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "contact_table")
@@ -18,6 +19,13 @@ public class Contact {
     private String occupation;
 
     public Contact(@NonNull String name,@NonNull String occupation) {
+        this.name = name;
+        this.occupation = occupation;
+    }
+
+    @Ignore
+    public Contact(int id, String name, String occupation) {
+        this.id = id;
         this.name = name;
         this.occupation = occupation;
     }

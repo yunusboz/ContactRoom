@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.yunus.contactroom.adapter.RecyclerViewAdapter;
@@ -20,9 +21,10 @@ import com.yunus.contactroom.model.ContactViewModel;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnContactClickListener{
 
     private static final int NEW_CONTACT_ACTIVITY_REQUEST_CODE = 1;
+    public static final String CONTACT_ID = "contact_id";
     private ContactViewModel contactViewModel;
     private FloatingActionButton fab;
     private RecyclerView recyclerView;
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 .create(ContactViewModel.class);
 
         contactViewModel.getAllContacts().observe(this, contacts -> {
-            recyclerViewAdapter = new RecyclerViewAdapter(contacts,MainActivity.this);
+            recyclerViewAdapter = new RecyclerViewAdapter(contacts,MainActivity.this,this);
             recyclerView.setAdapter(recyclerViewAdapter);
 
             //logContacts(contacts);
@@ -76,5 +78,17 @@ public class MainActivity extends AppCompatActivity {
             Contact contact = new Contact(name,occupation);
             ContactViewModel.insert(contact);
         }
+    }
+
+    @Override
+    public void onContactClick(int position) {
+        Contact clickedContact = contactViewModel.allContacts.getValue().get(position);
+        Toast.makeText(MainActivity.this,
+                "Contact\n" + "Name: " +clickedContact.getName() + " - Occupation: " + clickedContact.getOccupation(),
+                Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(MainActivity.this, NewContact.class);
+        intent.putExtra(CONTACT_ID,clickedContact.id);
+        startActivity(intent);
     }
 }
